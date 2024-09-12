@@ -1,0 +1,189 @@
+<!DOCTYPE html>
+<style>
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f4f4f4;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100vh;
+  margin: 0;
+}
+
+.quiz-container {
+  background: white;
+  padding: 20px;
+  border-radius: 10px;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  width: 300px;
+  text-align: center;
+}
+
+h1 {
+  margin-bottom: 20px;
+  color: #333;
+}
+
+#question {
+  margin-bottom: 10px;
+  font-size: 18px;
+  color: #333;
+}
+
+ul {
+  list-style-type: none;
+  padding: 0;
+}
+
+li {
+  background: #f4f4f4;
+  margin: 5px 0;
+  padding: 10px;
+  cursor: pointer;
+  border: 1px solid #ddd;
+  border-radius: 5px;
+  transition: background-color 0.3s;
+}
+
+li:hover {
+  background-color: #ddd;
+}
+
+button {
+  padding: 10px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  margin-top: 10px;
+}
+
+button:hover {
+  background-color: #218838;
+}
+
+.hidden {
+  display: none;
+}
+
+#result {
+  margin-top: 20px;
+}
+</style>
+
+
+
+
+
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Quiz App</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="quiz-container">
+    <h1>Quiz App</h1>
+    <div id="quiz">
+      <div id="question">Question text goes here</div>
+      <ul id="choices">
+        <!-- Choices will be inserted dynamically here -->
+      </ul>
+      <button id="submit">Submit</button>
+      <div id="result" class="hidden">Your score is: <span id="score"></span></div>
+    </div>
+  </div>
+  <script>
+const quizData = [
+  {
+    question: "What is the capital of France?",
+    choices: ["Paris", "London", "Berlin", "Madrid"],
+    answer: "Paris",
+  },
+  {
+    question: "Who is the founder of Microsoft?",
+    choices: ["Bill Gates", "Steve Jobs", "Elon Musk", "Mark Zuckerberg"],
+    answer: "Bill Gates",
+  },
+  {
+    question: "What is the tallest mountain in the world?",
+    choices: ["Mount Everest", "K2", "Kangchenjunga", "Lhotse"],
+    answer: "Mount Everest",
+  },
+  {
+    question: "Which planet is known as the Red Planet?",
+    choices: ["Earth", "Mars", "Jupiter", "Saturn"],
+    answer: "Mars",
+  }
+];
+
+let currentQuestionIndex = 0;
+let score = 0;
+
+const questionElement = document.getElementById("question");
+const choicesElement = document.getElementById("choices");
+const submitButton = document.getElementById("submit");
+const resultElement = document.getElementById("result");
+const scoreElement = document.getElementById("score");
+
+function loadQuiz() {
+  // Clear previous choices
+  choicesElement.innerHTML = "";
+
+  // Load the current question and choices
+  const currentQuiz = quizData[currentQuestionIndex];
+  questionElement.innerText = currentQuiz.question;
+
+  currentQuiz.choices.forEach((choice) => {
+    const li = document.createElement("li");
+    li.innerText = choice;
+    li.addEventListener("click", () => selectChoice(choice));
+    choicesElement.appendChild(li);
+  });
+}
+
+let selectedChoice = null;
+
+function selectChoice(choice) {
+  selectedChoice = choice;
+  const choices = document.querySelectorAll("#choices li");
+  choices.forEach((li) => {
+    li.style.backgroundColor = ""; // Reset background color
+  });
+  event.target.style.backgroundColor = "#d3d3d3"; // Highlight selected
+}
+
+submitButton.addEventListener("click", () => {
+  if (!selectedChoice) return alert("Please select an answer.");
+
+  const currentQuiz = quizData[currentQuestionIndex];
+
+  // Check if the selected answer is correct
+  if (selectedChoice === currentQuiz.answer) {
+    score++;
+  }
+
+  // Move to the next question or end the quiz
+  currentQuestionIndex++;
+  selectedChoice = null;
+
+  if (currentQuestionIndex < quizData.length) {
+    loadQuiz();
+  } else {
+    showResults();
+  }
+});
+
+function showResults() {
+  resultElement.classList.remove("hidden");
+  scoreElement.innerText = `${score} out of ${quizData.length}`;
+  submitButton.style.display = "none";
+}
+
+// Load the first question
+loadQuiz();
+</script>
+</body>
+</html>
